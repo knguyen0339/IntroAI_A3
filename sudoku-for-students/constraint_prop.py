@@ -25,8 +25,23 @@ def AC3(csp, queue=None, removals=None):
     # Remember that:
     #    csp.variables is a list of variables
     #    csp.neighbors[x] is the neighbors of variable x
-    
-    raise NotImplemented
+
+    q = queue.Queue()
+
+    for arc in csp.constraints:
+        q.put(arc)
+
+    i = 0
+    while not q.empty():
+        (Xi, Xj) = q.get()
+        i = i + 1
+        if revise(csp, Xi, Xj):
+            if len(csp.values[Xi]) == 0:
+                return False
+            for Xk in (csp.peers[Xi] - set(Xj)):
+                q.put((Xk, Xi))
+    return True
+
 
 
 def revise(csp, Xi, Xj, removals):
@@ -43,4 +58,12 @@ def revise(csp, Xi, Xj, removals):
         one)
     """
 
-    raise NotImplemented
+    revised = False
+    values = set(csp.values[Xi])
+
+    for x in values:
+        if not inconsistent(csp, x, Xi, Xj):
+            csp.values[Xi] = csp.values[Xi].replace(x, '')
+            revised = True
+    return revised
+

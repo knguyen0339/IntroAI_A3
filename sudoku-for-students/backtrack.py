@@ -1,10 +1,10 @@
-# We the undersigned promise that we have in good faith attempted to follow the 
-# principles of pair programming. Although we were free to discuss ideas with 
-# others, the implementation is our own. We have shared a common workspace 
-# (possibly virtually) and taken turns at the keyboard for the majority of the 
-# work that we are submitting. Furthermore, any non programming portions of the 
-# assignment were done independently. We recognize that should this not be the 
-# case, we will be subject to penalties as outlined in the course syllabus. 
+# We the undersigned promise that we have in good faith attempted to follow the
+# principles of pair programming. Although we were free to discuss ideas with
+# others, the implementation is our own. We have shared a common workspace
+# (possibly virtually) and taken turns at the keyboard for the majority of the
+# work that we are submitting. Furthermore, any non programming portions of the
+# assignment were done independently. We recognize that should this not be the
+# case, we will be subject to penalties as outlined in the course syllabus.
 # [Phillip Cuesta and Kaitlyn Nguyen]
 
 
@@ -33,5 +33,23 @@ def backtracking_search(csp,
     """
     
     # See Figure 6.5 of your book for details
+    if isComplete(assignment):
+        return assignment
 
-    raise notImplemented
+    var = select_unassigned_variable(assignment, csp)
+    domain = deepcopy(csp.values)
+
+    for value in csp.values[var]:
+        if isConsistent(var, value, assingment, csp):
+            assignment[var] = value
+            inference = {}
+            inference = Inference(assignment, inference, csp, var, value)
+            if inference != "Failure":
+                return result
+            del assignment[var]
+            csp.values.update(domain)
+
+    return "Failure"
+
+
+
