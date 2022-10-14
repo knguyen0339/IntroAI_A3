@@ -33,13 +33,13 @@ def AC3(csp, queue=None, removals=None):
 
     i = 0
     while not q.empty():
-        (Xi, Xj) = q.get()
+        Xi, Xj = q.get()
         i = i + 1
-        if revise(csp, Xi, Xj):
-            if len(csp.values[Xi]) == 0:
+        if revise(csp, Xi, Xj, removals):
+            if len(csp.values[Xj]) == 0:
                 return False
-            for Xk in (csp.peers[Xi] - set(Xj)):
-                q.put((Xk, Xi))
+            for j in (csp.peers[Xj] - set(Xj)):
+                q.put((j, Xi))
     return True
 
 
@@ -62,8 +62,10 @@ def revise(csp, Xi, Xj, removals):
     values = set(csp.values[Xi])
 
     for x in values:
-        if not inconsistent(csp, x, Xi, Xj):
-            csp.values[Xi] = csp.values[Xi].replace(x, '')
-            revised = True
+        # if not there exists y
+        for j in Xj:
+
+            if csp.choices(x) != csp.choices(j):
+                revised = True
     return revised
 
